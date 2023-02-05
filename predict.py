@@ -1,19 +1,24 @@
-from keras.models import load_model
-from tensorflow.keras.utils import load_img
-from tensorflow.keras.utils import img_to_array
-from keras.applications.vgg16 import preprocess_input
-from keras.applications.vgg16 import decode_predictions
-from keras.applications.vgg16 import VGG16
-import numpy as np
-  
-from keras.models import load_model
-# model = VGG16(weights=None)
-# model.load_weights('model_saved.h5')
-model = load_model('model_saved.h5')
-  
-image = load_img('v_data/test/planes/5.jpg', target_size=(224, 224))
-img = np.array(image)
-img = img / 255.0
-img = img.reshape(1,224,224,3)
-label = model.predict(img)
-print("Predicted Class (0 - Cars , 1- Planes): ", label[0][0])
+import cv2
+
+cascade_src = 'cars.xml'
+car_cascade = cv2.CascadeClassifier(cascade_src)
+
+while True:
+    img = cv2.imread("cars1.jpg")
+    
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    cars = car_cascade.detectMultiScale(gray, 1.1, 1)
+
+    for (x,y,w,h) in cars:
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),2)      
+
+    print("total count=", len(cars))
+    
+    cv2.imshow('video', img)
+    
+    if cv2.waitKey(33) == 27:
+        break
+
+img.release()
+cv2.destroyAllWindows()
